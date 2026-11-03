@@ -532,7 +532,7 @@ export default function AdminDashboard({ onViewChange, authError }: Props) {
     )
     const link = document.createElement("a")
     link.href = url
-    link.download = "nelzcollections-customers.csv"
+    link.download = "cynthias-culture-customers.csv"
     link.click()
     URL.revokeObjectURL(url)
   }

@@ -45,7 +45,7 @@ export default function AdminTopBar({
           {sectionTitle}
         </h1>
         <div style={{ fontSize: 12, color: '#94a3b8' }}>
-          Nelzcollections · Jul 21, 2026
+          Cynthia's Culture · Jul 21, 2026
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8 }}>

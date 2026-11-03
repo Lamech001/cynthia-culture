@@ -60,7 +60,7 @@ export default function InventorySection({ products }: InventorySectionProps) {
     )
     const link = document.createElement('a')
     link.href = url
-    link.download = 'nelzcollections-stock-alerts.csv'
+    link.download = "cynthias-culture-stock-alerts.csv"
     link.click()
     URL.revokeObjectURL(url)
   }

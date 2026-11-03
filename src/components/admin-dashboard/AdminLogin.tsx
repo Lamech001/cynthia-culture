@@ -86,7 +86,7 @@ export default function AdminLogin({
           Admin sign in
         </div>
         <p style={{ margin: "0 0 24px", color: "#64748b", fontSize: 13.5 }}>
-          Sign in to continue to the Nelzcollections admin dashboard.
+          Sign in to continue to the Cynthia's Culture admin dashboard.
         </p>
 
         <label
@@ -220,8 +220,8 @@ export default function AdminLogin({
             lineHeight: 1.6,
           }}
         >
-          Only users added in Supabase Authentication can access Admin. Public
-          sign-up is disabled; new Auth users are granted the Admin role.
+          Manually added Supabase Auth users can access Admin. Keep public
+          sign-up disabled; every Auth user has full administrator access.
         </p>
       </form>
     </main>

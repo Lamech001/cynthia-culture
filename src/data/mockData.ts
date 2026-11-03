@@ -22,18 +22,18 @@ export interface Product {
 }
 
 export const navCategories = [
-  { id: 'all', label: 'All Products', icon: '🛍️' },
-  { id: 'new', label: 'New Arrivals', icon: '✨' },
-  { id: 'sale', label: 'Sale', icon: '🔥' },
-  { id: 'divider1', label: '', icon: '' },
-  { id: 'clothing', label: 'Clothing', icon: '👔' },
-  { id: 'shoes', label: 'Shoes', icon: '👟' },
-  { id: 'bags', label: 'Bags', icon: '👜' },
-  { id: 'accessories', label: 'Accessories', icon: '💍' },
-  { id: 'divider2', label: '', icon: '' },
-  { id: 'men', label: 'Men', icon: '♂️' },
-  { id: 'women', label: 'Women', icon: '♀️' },
-  { id: 'kids', label: 'Kids', icon: '🧒' },
+  { id: 'all', label: 'All Products' },
+  { id: 'new', label: 'New Arrivals' },
+  { id: 'sale', label: 'Sale' },
+  { id: 'divider1', label: '' },
+  { id: 'clothing', label: 'Clothing' },
+  { id: 'shoes', label: 'Shoes' },
+  { id: 'bags', label: 'Bags' },
+  { id: 'accessories', label: 'Accessories' },
+  { id: 'divider2', label: '' },
+  { id: 'men', label: 'Men' },
+  { id: 'women', label: 'Women' },
+  { id: 'kids', label: 'Kids' },
 ]
 
 export const products: Product[] = [
@@ -365,7 +365,7 @@ export const promotions = [
 ]
 
 export const chatMessages = [
-  { id: 1, from: 'agent', name: 'Léa · Style Advisor', message: "Hi Sophia! Welcome to Nelzcollections. How can I help you today?", time: '3:10 PM', avatar: 'L' },
+  { id: 1, from: 'agent', name: 'Léa · Style Advisor', message: "Hi Sophia! Welcome to Cynthia's Culture. How can I help you today?", time: '3:10 PM', avatar: 'L' },
   { id: 2, from: 'user', name: 'You', message: "Hi! I ordered the Air Max Pulse Trainers (ORD-2026-0845) and they haven't arrived yet. Tracking shows shipped 10 days ago.", time: '3:12 PM', avatar: 'S' },
   { id: 3, from: 'agent', name: 'Léa · Style Advisor', message: "I'm so sorry to hear that, Sophia — let me pull up your order right now!", time: '3:12 PM', avatar: 'L' },
   { id: 4, from: 'agent', name: 'Léa · Style Advisor', message: "I can see your parcel left our warehouse on Jul 9th via DHL Express. The tracking number is 1Z9Y84E90315618265. It looks like there's been a delay at the customs hub — estimated delivery is now Jul 23rd. I'll flag this for priority review and email you an update within 2 hours.", time: '3:14 PM', avatar: 'L' },

@@ -6,12 +6,8 @@ set search_path = ''
 as $$
 begin
   insert into public.profiles (id, role)
-  values (new.id, 'admin')
-  on conflict (id) do update set role = 'admin';
+  values (new.id, 'customer')
+  on conflict (id) do nothing;
   return new;
 end;
 $$;
-
-update public.profiles
-set role = 'admin'
-where id in (select id from auth.users);

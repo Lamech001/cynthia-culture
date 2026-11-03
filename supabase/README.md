@@ -9,24 +9,14 @@ database password or service-role key in a `VITE_` environment variable.
 2. Apply database changes with `npx supabase db push`.
 3. In **Supabase Dashboard → Authentication → Sign In / Providers**, enable
    the Email provider so added users can sign in. Keep **Allow new users to
-   sign up** disabled; only manually added Auth accounts should be able to
-   access Admin.
-4. Create the first administrator in **Supabase Dashboard → Authentication →
-   Users → Add user**.
-5. Promote only that account in the Supabase SQL Editor, replacing the email:
+   sign up** disabled. Every manually added Auth user receives the `admin`
+   role and can manage the full dashboard.
+4. Add users in **Supabase Dashboard → Authentication → Users → Add user**,
+   then sign in to the Admin dashboard using that user's email and password.
 
-   ```sql
-   update public.profiles p
-   set role = 'admin'
-   from auth.users u
-   where p.id = u.id
-     and lower(u.email) = lower('admin@example.com');
-   ```
-
-6. Sign in to the Admin dashboard using that user's email and password.
-
-Profiles created through Supabase Auth default to the `customer` role. An
-account without an explicit `admin` role cannot access dashboard data.
+The migration also promotes existing Auth users to `admin`. Do not enable public
+sign-up unless you intend to grant every new registrant full administrator
+access.
 
 Guest checkout reuses the customer record for an existing normalized email
 instead of inserting a duplicate. Customer contact and delivery details are

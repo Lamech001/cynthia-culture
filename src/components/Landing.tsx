@@ -6,7 +6,6 @@ import {
   Heart,
   Star,
   X,
-  ArrowRight,
   Truck,
   Shield,
   RefreshCw,
@@ -48,7 +47,7 @@ const describePromotion = (promotion: StorefrontPromotion) =>
       : "free delivery"
 
 const getCustomerOrderToken = () => {
-  const key = "nelz-customer-order-access"
+  const key = "cynthias-culture-customer-order-access"
   const existing = localStorage.getItem(key)
   if (existing && existing.length >= 32) return existing
   const token = `${generateUuid()}${generateUuid()}`
@@ -70,8 +69,10 @@ const getSavedCheckoutDetails = (): Record<string, string> => {
 }
 
 export default function Landing({ onViewChange }: LandingProps) {
+  const lastScrollY = useRef(0)
   const [search, setSearch] = useState("")
   const [activeCat, setActiveCat] = useState("all")
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [sortBy, setSortBy] = useState("featured")
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutStep, setCheckoutStep] = useState<"cart" | "checkout">("cart")
@@ -110,6 +111,24 @@ export default function Landing({ onViewChange }: LandingProps) {
     useState<StorefrontPromotion[]>([])
   const [promotionLoadError, setPromotionLoadError] = useState("")
   const [arePromotionsLoading, setArePromotionsLoading] = useState(true)
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      if (currentScrollY < 80) {
+        setIsHeaderHidden(false)
+      } else if (currentScrollY > lastScrollY.current + 4) {
+        setIsHeaderHidden(true)
+      } else if (currentScrollY < lastScrollY.current - 4) {
+        setIsHeaderHidden(false)
+      }
+      lastScrollY.current = currentScrollY
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -504,6 +523,7 @@ export default function Landing({ onViewChange }: LandingProps) {
 
       {/* ── Header ── */}
       <header
+        className={`store-sticky-header${isHeaderHidden ? " is-hidden" : ""}`}
         style={{
           background: "#fff",
           borderBottom: "1px solid #e2e8f0",
@@ -523,21 +543,7 @@ export default function Landing({ onViewChange }: LandingProps) {
             letterSpacing: "0.02em",
           }}
         >
-          Free delivery around CBD · Paid delivery outside CBD
-          {availablePromotions[0] && (
-            <>
-              {" · "}Use{" "}
-              <span style={{ color: "#93c5fd", fontWeight: 700 }}>
-                {availablePromotions[0].code}
-              </span>{" "}
-              for {describePromotion(availablePromotions[0])} at checkout
-              {availablePromotions.length > 1
-                ? ` · ${availablePromotions.length - 1} more offer${
-                    availablePromotions.length > 2 ? "s" : ""
-                  }`
-                : ""}
-            </>
-          )}
+          Free delivery around Eldoret · Paid delivery outside Eldoret
         </div>
 
         <div
@@ -554,6 +560,7 @@ export default function Landing({ onViewChange }: LandingProps) {
         >
           {/* Hamburger */}
           <button
+            className="store-menu-button"
             onClick={() => setSidebarOpen((v) => !v)}
             style={{
               width: 36,
@@ -572,17 +579,33 @@ export default function Landing({ onViewChange }: LandingProps) {
           </button>
 
           {/* Logo */}
-          <a href="#" style={{ textDecoration: "none", flexShrink: 0 }}>
+          <a
+            className="store-wordmark-link"
+            href="#"
+            style={{
+              textDecoration: "none",
+              flexShrink: 0,
+              background: DARK,
+              borderRadius: 6,
+              padding: "7px 10px",
+              transform: "scale(0.95)",
+              transformOrigin: "left center",
+            }}
+          >
             <span
+              className="store-wordmark"
               style={{
                 fontFamily: "Plus Jakarta Sans, sans-serif",
                 fontWeight: 800,
-                fontSize: 21,
-                color: DARK,
+                fontSize: 30,
+                color: "#fff",
                 letterSpacing: "-0.5px",
               }}
             >
-              nelz<span style={{ color: ACCENT }}>collections</span>
+              CYNTHIA'S
+              <span className="store-wordmark-script" style={{ color: "#ec4899" }}>
+                {" "}CULTURE
+              </span>
             </span>
           </a>
 
@@ -675,6 +698,7 @@ export default function Landing({ onViewChange }: LandingProps) {
             <button
               onClick={() => onViewChange("customer")}
               className="store-account-button"
+              aria-label="Account"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -723,7 +747,8 @@ export default function Landing({ onViewChange }: LandingProps) {
               }
               onMouseLeave={(e) => (e.currentTarget.style.background = ACCENT)}
             >
-              <ShoppingCart size={15} /> Cart
+              <ShoppingCart size={15} />
+              <span className="store-cart-label">Cart</span>
               {cartCount > 0 && (
                 <span
                   style={{
@@ -841,7 +866,6 @@ export default function Landing({ onViewChange }: LandingProps) {
                     width: "100%",
                     display: "flex",
                     alignItems: "center",
-                    gap: 10,
                     padding: "9px 16px",
                     border: "none",
                     cursor: "pointer",
@@ -863,7 +887,6 @@ export default function Landing({ onViewChange }: LandingProps) {
                       e.currentTarget.style.background = "transparent"
                   }}
                 >
-                  <span style={{ fontSize: 16 }}>{cat.icon}</span>
                   {cat.label}
                   {cat.id === "sale" && (
                     <span
@@ -1030,123 +1053,65 @@ export default function Landing({ onViewChange }: LandingProps) {
             <div
               className="store-hero"
               style={{
-                borderRadius: 16,
-                overflow: "hidden",
-                marginBottom: 32,
+                width: "100%",
+                maxWidth: 768,
+                margin: "0 auto 32px",
                 position: "relative",
-                height: 340,
-                background: "#0f172a",
+                borderRadius: 18,
+                overflow: "hidden",
+                lineHeight: 0,
+                boxShadow: "0 18px 48px rgba(190, 24, 93, 0.16)",
               }}
             >
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=400&fit=crop&auto=format&crop=top"
-                alt="Summer Collection"
+                src="/images/cynthias-culture-hero.jpg"
+                alt="Cynthia's Culture: Find your style, own your look. Explore clothing, bags, shoes, accessories and more."
                 style={{
                   width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: 0.45,
+                  height: "auto",
+                  display: "block",
                 }}
               />
-              <div
-                className="store-hero-content"
+              <a
+                href="#store-category-pills"
+                className="store-hero-cta"
+                aria-label="Explore Cynthia's Culture categories"
+                onClick={() => setActiveCat("all")}
                 style={{
                   position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  padding: "0 52px",
+                  display: "block",
+                  left: "7.8%",
+                  top: "78.2%",
+                  width: "40%",
+                  height: "6.5%",
+                  borderRadius: 12,
                 }}
-              >
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: "#2563eb",
-                    color: "#fff",
-                    fontSize: 11.5,
-                    fontWeight: 800,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    padding: "5px 14px",
-                    borderRadius: 20,
-                    marginBottom: 18,
-                    width: "fit-content",
-                  }}
-                >
-                  Summer 2026 Collection
-                </span>
-                <h1
-                  className="store-hero-title"
-                  style={{
-                    fontFamily: "Plus Jakarta Sans, sans-serif",
-                    fontSize: 46,
-                    fontWeight: 800,
-                    color: "#fff",
-                    margin: "0 0 14px",
-                    lineHeight: 1.1,
-                    letterSpacing: "-1px",
-                    maxWidth: 520,
-                  }}
-                >
-                  Dress for the
-                  <br />
-                  life you want.
-                </h1>
-                <p
-                  style={{
-                    color: "#cbd5e1",
-                    fontSize: 16,
-                    margin: "0 0 28px",
-                    maxWidth: 380,
-                  }}
-                >
-                  New arrivals in clothing, shoes &amp; bags — up to 40% off
-                  selected styles.
-                </p>
-                <div style={{ display: "flex", gap: 12 }}>
-                  <button
-                    onClick={() => setActiveCat("new")}
-                    style={{
-                      padding: "12px 26px",
-                      background: "#fff",
-                      color: DARK,
-                      border: "none",
-                      borderRadius: 8,
-                      fontSize: 14,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    Shop New Arrivals <ArrowRight size={15} />
-                  </button>
-                  <button
-                    onClick={() => setActiveCat("sale")}
-                    style={{
-                      padding: "12px 26px",
-                      background: "transparent",
-                      color: "#fff",
-                      border: "2px solid rgba(255,255,255,0.4)",
-                      borderRadius: 8,
-                      fontSize: 14,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                  >
-                    View Sale
-                  </button>
-                </div>
-              </div>
+              />
+              <a
+                href="https://wa.me/254715393241?text=Hello%20Cynthia%27s%20Culture%2C%20I%27d%20like%20to%20know%20more%20about%20your%20collection."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="store-hero-cta"
+                aria-label="Contact Cynthia's Culture on WhatsApp"
+                style={{
+                  position: "absolute",
+                  display: "block",
+                  left: "7.8%",
+                  top: "85.8%",
+                  width: "40%",
+                  height: "6.5%",
+                  borderRadius: 12,
+                }}
+              />
             </div>
           )}
 
           {/* Category Pills */}
           <div
+            id="store-category-pills"
             className="store-category-pills"
             style={{
+              scrollMarginTop: 140,
               display: "flex",
               gap: 8,
               marginBottom: 20,
@@ -1155,12 +1120,12 @@ export default function Landing({ onViewChange }: LandingProps) {
           >
             {[
               { id: "all", label: "All" },
-              { id: "new", label: "✨ New In" },
-              { id: "sale", label: "🔥 Sale" },
-              { id: "clothing", label: "👔 Clothing" },
-              { id: "shoes", label: "👟 Shoes" },
-              { id: "bags", label: "👜 Bags" },
-              { id: "accessories", label: "💍 Accessories" },
+              { id: "new", label: "New Arrivals" },
+              { id: "sale", label: "Sale" },
+              { id: "clothing", label: "Clothing" },
+              { id: "shoes", label: "Shoes" },
+              { id: "bags", label: "Bags" },
+              { id: "accessories", label: "Accessories" },
             ].map((c) => (
               <button
                 key={c.id}
@@ -1355,7 +1320,7 @@ export default function Landing({ onViewChange }: LandingProps) {
             }}
           >
             {[
-              [Truck, "Free delivery around CBD"],
+              [Truck, "Free delivery around Eldoret"],
               [RefreshCw, "30-day returns"],
               [Shield, "Secure checkout"],
               [Package, "Live order tracking"],
@@ -1398,7 +1363,8 @@ export default function Landing({ onViewChange }: LandingProps) {
                 marginBottom: 10,
               }}
             >
-              nelz<span style={{ color: "#60a5fa" }}>collections</span>
+              CYNTHIA'S
+              <span style={{ color: "#ec4899" }}> CULTURE</span>
             </div>
             <p
               style={{
@@ -1477,7 +1443,7 @@ export default function Landing({ onViewChange }: LandingProps) {
           }}
         >
           <span style={{ fontSize: 12 }}>
-            © 2026 Nelzcollections. All rights reserved.
+            © 2026 Cynthia's Culture. All rights reserved.
           </span>
         </div>
         <div
@@ -1844,7 +1810,7 @@ export default function Landing({ onViewChange }: LandingProps) {
                           color: "#16a34a",
                         }}
                       >
-                        Free around CBD
+                        Free around Eldoret
                       </span>
                     </div>
                     <p
@@ -1854,7 +1820,7 @@ export default function Landing({ onViewChange }: LandingProps) {
                         margin: "4px 0 8px",
                       }}
                     >
-                      Delivery outside CBD is paid separately and is not
+                      Delivery outside Eldoret is paid separately and is not
                       included in your order total.
                     </p>
                     <div
@@ -2292,7 +2258,7 @@ export default function Landing({ onViewChange }: LandingProps) {
                           color: "#16a34a",
                         }}
                       >
-                        Free around CBD
+                        Free around Eldoret
                       </span>
                     </div>
                     <p
@@ -2302,7 +2268,7 @@ export default function Landing({ onViewChange }: LandingProps) {
                         margin: "-4px 0 10px",
                       }}
                     >
-                      Delivery outside CBD is paid separately and is not
+                      Delivery outside Eldoret is paid separately and is not
                       included in your order total.
                     </p>
                     <div
